@@ -6,7 +6,7 @@ namespace LoanCalculator
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Welcome to Loan Calculator");
         }
     }
 }

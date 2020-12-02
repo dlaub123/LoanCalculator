@@ -18,7 +18,7 @@ namespace LoanCalculator
             // loan amount = (interest rate * loan amount) / (1 - (1 + interest rate)^(number of payments * -1))
             var paymentAmount = (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
 
-            Console.WriteLine(paymentAmount);
+            Console.WriteLine(paymentAmount); // 2 decimal places!
         }
     }
 }

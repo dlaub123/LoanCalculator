@@ -15,10 +15,15 @@ namespace LoanCalculator
             var rateOfInterest = interest / (12 * 100);
             var numberOfPayments = numberOfYears * 12;
 
-            // loan amount = (interest rate * loan amount) / (1 - (1 + interest rate)^(number of payments * -1))
-            var paymentAmount = (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
+            double paymentAmount = CalcLoanAmt(loanAmount, rateOfInterest, numberOfPayments);
 
             Console.WriteLine(paymentAmount); // 2 decimal places!
+
+            static double CalcLoanAmt(double loanAmount, double rateOfInterest, int numberOfPayments)
+            {
+                // loan amount = (interest rate * loan amount) / (1 - (1 + interest rate)^(number of payments * -1))
+                return (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
+            }
         }
     }
 }

@@ -17,6 +17,8 @@ namespace LoanCalculator
             double paymentAmount = CalcLoanAmt(loanAmount, interest, numberOfYears, downPayment);
 
             Console.WriteLine("Payment Amount: {0:C2}",paymentAmount); // 2 decimal places!
+            Console.WriteLine(String.Format("Payment Amount: {0:C2}", paymentAmount)); // redundant to use String.Format inside Console.WriteLine
+            Console.WriteLine($"Payment Amount: {paymentAmount:C2}"); // swift style
 
             var ending_balance = loanAmount * 0.8;
             var count = 1;

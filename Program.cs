@@ -37,6 +37,8 @@ namespace LoanCalculator
                 // Then print out 0 balance, the interest paid and that balance minus the interest will tell us
                 // how much principle you paid to get to zero.
 
+                // Refactor to List of struct vs string - i.e. store each element (e.g. interest & principle) as is w/o formatting
+                // Then display w/formatting in comsole writes or bind to visual grid or write to CSV file w/header
                 if ((new_balance + interest_paid) < payment)
                 {
                     listDisplay.Add(count + ". Payment: " + (new_balance + interest_paid).ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + (new_balance - interest_paid).ToString("C") + " Loan Balance is: $0.00");

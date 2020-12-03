@@ -23,7 +23,11 @@ namespace LoanCalculator
             var listDisplay = new List<String>();
             while (ending_balance > 0.0)
             {
-                
+                // Simple Refactoring:
+                //   eliminate duplicate variables
+                // rename variables with camelCasing vs. _ casing
+                // Advanced Refactoring:
+                //   store output in struct based List w/o output formating to facilitate 3 final outputs: a) console writes, b) bound data grid, c) csv file
                 var new_balance = ending_balance;
                 var annual_rate = interest;
                 var payment = paymentAmount;
@@ -38,7 +42,7 @@ namespace LoanCalculator
                 // how much principle you paid to get to zero.
 
                 // Refactor to List of struct vs string - i.e. store each element (e.g. interest & principle) as is w/o formatting
-                // Then display w/formatting in comsole writes or bind to visual grid or write to CSV file w/header
+                // Then display w/formatting in console writes or bind to visual grid or write to CSV file w/header
                 if ((new_balance + interest_paid) < payment)
                 {
                     listDisplay.Add(count + ". Payment: " + (new_balance + interest_paid).ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + (new_balance - interest_paid).ToString("C") + " Loan Balance is: $0.00");

@@ -40,40 +40,40 @@ namespace LoanCalculator
 
             static List<String> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount)
             {
-                var ending_balance = loanAmount * 0.8;
-                var count = 1;
+                var endingBalance = loanAmount * 0.8;
+                var monthCount = 1;
                 var loanAmorizationScheduleLocal = new List<String>();
-                while (ending_balance > 0.0)
+                while (endingBalance > 0.0)
                 {
                     // Simple Refactoring:
                     //   eliminate duplicate variables
-                    // rename variables with camelCasing vs. _ casing
+                    //   rename variables with camelCasing vs. _ casing
                     // Advanced Refactoring:
                     //   store output in struct based List w/o output formating to facilitate 3 final outputs: a) console writes, b) bound data grid, c) csv file
-                    var new_balance = ending_balance;
-                    var annual_rate = interest;
+                    var newBalance = endingBalance;
+                    var annualRate = interest;
                     var payment = paymentAmount;
                     // Calculate interest by multiplying rate against balance
-                    var interest_paid = new_balance * (annual_rate / 100.0 / 12.0);
+                    var interestPaid = newBalance * (annualRate / 100.0 / 12.0);
                     // Subtract interest from your payment
-                    var principle_paid = payment - interest_paid;
+                    var principlePaid = payment - interestPaid;
                     // Subtract final payment from running balance
-                    ending_balance = new_balance - principle_paid;
+                    endingBalance = newBalance - principlePaid;
                     // If the balance remaining plus its interest is less than payment amount
                     // Then print out 0 balance, the interest paid and that balance minus the interest will tell us
                     // how much principle you paid to get to zero.
 
                     // Refactor to List of struct vs string - i.e. store each element (e.g. interest & principle) as is w/o formatting
                     // Then display w/formatting in console writes or bind to visual grid or write to CSV file w/header
-                    if ((new_balance + interest_paid) < payment)
+                    if ((newBalance + interestPaid) < payment)
                     {
-                        loanAmorizationScheduleLocal.Add(count + ". Payment: " + (new_balance + interest_paid).ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + (new_balance - interest_paid).ToString("C") + " Loan Balance is: $0.00");
+                        loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + (newBalance + interestPaid).ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + (newBalance - interestPaid).ToString("C") + " Loan Balance is: $0.00");
                     }
                     else
                     {
-                        loanAmorizationScheduleLocal.Add(count + ". Payment: " + payment.ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + principle_paid.ToString("C") + " Loan Balance is: " + ending_balance.ToString("C"));
+                        loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + payment.ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + principlePaid.ToString("C") + " Loan Balance is: " + endingBalance.ToString("C"));
                     }
-                    count++;
+                    monthCount++;
                 }
                 return loanAmorizationScheduleLocal;
             }

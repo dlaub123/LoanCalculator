@@ -9,6 +9,8 @@ namespace LoanCalculator
         {
             Console.WriteLine("Welcome to Loan Calculator");
 
+            var loanAmortizationSchedule = new List<String>();
+
             var downPayment = 20; // in Percent
             var loanAmount = 74000;
             var interest = 9.75;
@@ -20,7 +22,9 @@ namespace LoanCalculator
             //Console.WriteLine(String.Format("Payment Amount: {0:C2}", paymentAmount)); // redundant to use String.Format inside Console.WriteLine
             Console.WriteLine($"Payment Amount: {paymentAmount:C2}"); // swift style
 
-            CalcLoanAmortizationSchedule(loanAmount, interest, paymentAmount);
+            loanAmortizationSchedule = CalcLoanAmortizationSchedule(loanAmount, interest, paymentAmount);
+
+            Console.WriteLine("Goodbye");
 
             static double CalcLoanAmt(double loanAmount, double interest, int numberOfYears, int downPayment) // make downPayment an optional arg w/default value of 0
             {
@@ -34,11 +38,11 @@ namespace LoanCalculator
                 return (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
             }
 
-            static void CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount)
+            static List<String> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount)
             {
                 var ending_balance = loanAmount * 0.8;
                 var count = 1;
-                var listDisplay = new List<String>();
+                var loanAmorizationScheduleLocal = new List<String>();
                 while (ending_balance > 0.0)
                 {
                     // Simple Refactoring:
@@ -63,14 +67,15 @@ namespace LoanCalculator
                     // Then display w/formatting in console writes or bind to visual grid or write to CSV file w/header
                     if ((new_balance + interest_paid) < payment)
                     {
-                        listDisplay.Add(count + ". Payment: " + (new_balance + interest_paid).ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + (new_balance - interest_paid).ToString("C") + " Loan Balance is: $0.00");
+                        loanAmorizationScheduleLocal.Add(count + ". Payment: " + (new_balance + interest_paid).ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + (new_balance - interest_paid).ToString("C") + " Loan Balance is: $0.00");
                     }
                     else
                     {
-                        listDisplay.Add(count + ". Payment: " + payment.ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + principle_paid.ToString("C") + " Loan Balance is: " + ending_balance.ToString("C"));
+                        loanAmorizationScheduleLocal.Add(count + ". Payment: " + payment.ToString("C") + " Interest: " + interest_paid.ToString("C") + " Principle: " + principle_paid.ToString("C") + " Loan Balance is: " + ending_balance.ToString("C"));
                     }
                     count++;
                 }
+                return loanAmorizationScheduleLocal;
             }
         }
     }

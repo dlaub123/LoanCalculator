@@ -1,10 +1,23 @@
-﻿using System;
+﻿// Loan Calculation/Amortization Examples:
+// https://teamtreehouse.com/community/loan-payment-formula-in-c
+// https://www.coderslexicon.com/amortization-definitive-c-c-java-etc/
+// https://stackoverflow.com/questions/342281/generating-an-amortization-schedule
+
+using System;
 using System.Collections.Generic;
 
 namespace LoanCalculator
 {
     class Program
     {
+        struct MonthlyLoanAmortizationValues
+        {
+            double monthlyPayment;
+            double monthlyInterest;
+            double monthlyPrinciple;
+            double monthlyBalance;
+        }
+        
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Loan Calculator");
@@ -22,7 +35,7 @@ namespace LoanCalculator
             //Console.WriteLine(String.Format("Payment Amount: {0:C2}", paymentAmount)); // redundant to use String.Format inside Console.WriteLine
             Console.WriteLine($"Payment Amount: {paymentAmount:C2}"); // swift style
 
-            loanAmortizationSchedule = CalcLoanAmortizationSchedule(loanAmount, interest, paymentAmount);
+            loanAmortizationSchedule = CalcLoanAmortizationSchedule(loanAmount, interest, paymentAmount, downPayment);
 
             Console.WriteLine("Goodbye");
 
@@ -38,9 +51,10 @@ namespace LoanCalculator
                 return (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
             }
 
-            static List<String> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount)
+            static List<String> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount, double downPayment)
             {
-                var endingBalance = loanAmount * 0.8;
+                var downPaymentAmount = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
+                var endingBalance = loanAmount * downPaymentAmount;
                 var monthCount = 1;
                 var loanAmorizationScheduleLocal = new List<String>();
                 while (endingBalance > 0.0)

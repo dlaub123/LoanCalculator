@@ -10,19 +10,19 @@ namespace LoanCalculator
 {
     class Program
     {
-        struct MonthlyLoanAmortizationValues
+        public struct MonthlyLoanAmortizationValues // why doesn't decaring the struct public make its members public?
         {
-            double monthlyPayment;
-            double monthlyInterest;
-            double monthlyPrinciple;
-            double monthlyBalance;
+            public double monthlyPayment;
+            public double monthlyInterest;
+            public double monthlyPrinciple;
+            public double monthlyBalance;
         }
         
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Loan Calculator");
 
-            var loanAmortizationSchedule = new List<String>();
+            var loanAmortizationSchedule = new List<MonthlyLoanAmortizationValues>();
 
             var downPayment = 20; // in Percent
             var loanAmount = 74000;
@@ -36,6 +36,10 @@ namespace LoanCalculator
             Console.WriteLine($"Payment Amount: {paymentAmount:C2}"); // swift style
 
             loanAmortizationSchedule = CalcLoanAmortizationSchedule(loanAmount, interest, paymentAmount, downPayment);
+
+            OutputForConsoleLoanAmortizationSchedule(loanAmortizationSchedule);
+            OutputForCSVLoanAmortizationSchedule(loanAmortizationSchedule);
+
 
             Console.WriteLine("Goodbye");
 
@@ -51,12 +55,12 @@ namespace LoanCalculator
                 return (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
             }
 
-            static List<String> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount, double downPayment)
+            static List<MonthlyLoanAmortizationValues> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount, double downPayment)
             {
                 var downPaymentAmount = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
                 var endingBalance = loanAmount * downPaymentAmount;
                 var monthCount = 1;
-                var loanAmorizationScheduleLocal = new List<String>();
+                var loanAmorizationScheduleLocal = new List<MonthlyLoanAmortizationValues>();
                 while (endingBalance > 0.0)
                 {
                     // Simple Refactoring:
@@ -79,17 +83,58 @@ namespace LoanCalculator
 
                     // Refactor to List of struct vs string - i.e. store each element (e.g. interest & principle) as is w/o formatting
                     // Then display w/formatting in console writes or bind to visual grid or write to CSV file w/header
+                    var monthlyLoanAmortizationValues = new MonthlyLoanAmortizationValues();
                     if ((newBalance + interestPaid) < payment)
                     {
-                        loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + (newBalance + interestPaid).ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + (newBalance - interestPaid).ToString("C") + " Loan Balance is: $0.00");
+                        monthlyLoanAmortizationValues.monthlyPayment = newBalance + interestPaid;
+                        monthlyLoanAmortizationValues.monthlyInterest = interestPaid;
+                        monthlyLoanAmortizationValues.monthlyPrinciple = newBalance - interestPaid;
+                        monthlyLoanAmortizationValues.monthlyBalance = 0.0;
+                        // loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + (newBalance + interestPaid).ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + (newBalance - interestPaid).ToString("C") + " Loan Balance is: $0.00");
                     }
                     else
                     {
-                        loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + payment.ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + principlePaid.ToString("C") + " Loan Balance is: " + endingBalance.ToString("C"));
+                        monthlyLoanAmortizationValues.monthlyPayment = payment;
+                        monthlyLoanAmortizationValues.monthlyInterest = interestPaid;
+                        monthlyLoanAmortizationValues.monthlyPrinciple = principlePaid;
+                        monthlyLoanAmortizationValues.monthlyBalance = endingBalance;
+                        // loanAmorizationScheduleLocal.Add(monthCount + ". Payment: " + payment.ToString("C") + " Interest: " + interestPaid.ToString("C") + " Principle: " + principlePaid.ToString("C") + " Loan Balance is: " + endingBalance.ToString("C"));
                     }
+                    loanAmorizationScheduleLocal.Add(monthlyLoanAmortizationValues);
                     monthCount++;
                 }
                 return loanAmorizationScheduleLocal;
+            }
+
+            static void OutputForConsoleLoanAmortizationSchedule(List<MonthlyLoanAmortizationValues> loanAmortizationSchedule)
+            {
+                int ctr = 1;
+                foreach (var monthlyLoanAmortizationValues in loanAmortizationSchedule)
+                {
+                    string line = String.Format("{0}. Payment: {1:C}  Interest: {2:C} Principle: {3:C}  Loan Balance: {4:C}",ctr++, 
+                                                monthlyLoanAmortizationValues.monthlyPayment,
+                                                monthlyLoanAmortizationValues.monthlyInterest,
+                                                monthlyLoanAmortizationValues.monthlyPrinciple,
+                                                monthlyLoanAmortizationValues.monthlyBalance
+                                              );
+                    Console.WriteLine(line);
+                }
+            }
+
+            static void OutputForCSVLoanAmortizationSchedule(List<MonthlyLoanAmortizationValues> loanAmortizationSchedule)
+            {
+                int ctr = 1;
+                Console.WriteLine("Month,Payment,Interest,Principle,Balance");
+                foreach (var monthlyLoanAmortizationValues in loanAmortizationSchedule)
+                {
+                    string line = String.Format("{0},\"{1:C}\",\"{2:C}\",\"{3:C}\",\"{4:C}\"", ctr++,
+                                                monthlyLoanAmortizationValues.monthlyPayment,
+                                                monthlyLoanAmortizationValues.monthlyInterest,
+                                                monthlyLoanAmortizationValues.monthlyPrinciple,
+                                                monthlyLoanAmortizationValues.monthlyBalance
+                                              );
+                    Console.WriteLine(line);
+                }
             }
         }
     }

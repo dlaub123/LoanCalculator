@@ -23,9 +23,16 @@ namespace LoanCalculator
             Console.WriteLine("Welcome to Loan Calculator");
 
             var loanAmortizationSchedule = new List<MonthlyLoanAmortizationValues>();
+            string inputString;
+            double inputNumeric;
+            do 
+            {
+                Console.Write("Enter Loan Amount: ");
+                inputString = Console.ReadLine();
+            } while (!ValidateNumericRange(inputString, 0, 10000000, out inputNumeric));
 
-            var downPayment = 20; // in Percent
             var loanAmount = 74000;
+            var downPayment = 20; // in Percent
             var interest = 9.75;
             var numberOfYears = 29;
 
@@ -135,6 +142,14 @@ namespace LoanCalculator
                                               );
                     Console.WriteLine(line);
                 }
+            }
+
+            static bool ValidateNumericRange(string input, double low, double high, out double result)
+            {
+                result = -1;
+                bool ok = Double.TryParse(input, out result);
+                ok = ok && (result > low) && (result < high);
+                return ok;
             }
         }
     }

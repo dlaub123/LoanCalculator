@@ -29,12 +29,26 @@ namespace LoanCalculator
             {
                 Console.Write("Enter Loan Amount: ");
                 inputString = Console.ReadLine();
-            } while (!ValidateNumericRange(inputString, 0, 10000000, out inputNumeric));
-
+            } while (!ValidateNumericRange(inputString, 74000, 0, 10000000, out inputNumeric));
             var loanAmount = inputNumeric; // 74000;
-            var downPayment = 20; // in Percent
-            var interest = 9.75;
-            var numberOfYears = 29;
+            do
+            {
+                Console.Write("Enter Down Payment: ");
+                inputString = Console.ReadLine();
+            } while (!ValidateNumericRange(inputString, 20, 0, 50, out inputNumeric));
+            var downPayment = inputNumeric; // in Percent 20%
+            do 
+            {
+                Console.Write("Enter Interest Rate: ");
+                inputString = Console.ReadLine();
+            } while (!ValidateNumericRange(inputString, 9.75, 0, 50, out inputNumeric));
+            var interest = inputNumeric; //  9.75;
+            do
+            {
+                Console.Write("Enter Number of Years: ");
+                inputString = Console.ReadLine();
+            } while (!ValidateNumericRange(inputString, 29, 0, 100, out inputNumeric));
+            var numberOfYears = inputNumeric; // 29;
 
             double paymentAmount = CalcLoanAmt(loanAmount, interest, numberOfYears, downPayment);
 
@@ -50,7 +64,7 @@ namespace LoanCalculator
 
             Console.WriteLine("Goodbye");
 
-            static double CalcLoanAmt(double loanAmount, double interest, int numberOfYears, int downPayment) // make downPayment an optional arg w/default value of 0
+            static double CalcLoanAmt(double loanAmount, double interest, double numberOfYears, double downPayment) // make downPayment an optional arg w/default value of 0
             {
                 // subtract down payment from load amount
                 var loanAmountAsFractionOfLoan = DownPaymentAsFractionOfLoan(downPayment);
@@ -120,7 +134,7 @@ namespace LoanCalculator
                 int ctr = 1;
                 foreach (var monthlyLoanAmortizationValues in loanAmortizationSchedule)
                 {
-                    string line = String.Format("{0}. Payment: {1:C}  Interest: {2:C} Principle: {3:C}  Loan Balance: {4:C}",ctr++, 
+                    string line = String.Format("{0,5}. Payment: {1,10:C}  Interest: {2,10:C} Principle: {3,10:C}  Loan Balance: {4,16:C}",ctr++, 
                                                 monthlyLoanAmortizationValues.monthlyPayment,
                                                 monthlyLoanAmortizationValues.monthlyInterest,
                                                 monthlyLoanAmortizationValues.monthlyPrinciple,
@@ -146,11 +160,20 @@ namespace LoanCalculator
                 }
             }
 
-            static bool ValidateNumericRange(string input, double low, double high, out double result)
+            static bool ValidateNumericRange(string input, double defaultVal, double low, double high, out double result)
             {
-                result = -1;
-                bool ok = Double.TryParse(input, out result);
-                ok = ok && (result > low) && (result < high);
+                bool ok;
+                if (String.IsNullOrWhiteSpace(input))
+                {
+                    result = defaultVal;
+                    ok = true;
+                }
+                else
+                {
+                    result = -1;
+                    ok = Double.TryParse(input.Trim(), out result);
+                    ok = ok && (result > low) && (result < high);
+                }
                 return ok;
             }
 

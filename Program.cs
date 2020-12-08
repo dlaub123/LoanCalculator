@@ -31,7 +31,7 @@ namespace LoanCalculator
                 inputString = Console.ReadLine();
             } while (!ValidateNumericRange(inputString, 0, 10000000, out inputNumeric));
 
-            var loanAmount = 74000;
+            var loanAmount = inputNumeric; // 74000;
             var downPayment = 20; // in Percent
             var interest = 9.75;
             var numberOfYears = 29;
@@ -53,8 +53,9 @@ namespace LoanCalculator
             static double CalcLoanAmt(double loanAmount, double interest, int numberOfYears, int downPayment) // make downPayment an optional arg w/default value of 0
             {
                 // subtract down payment from load amount
-                var downPaymentAmount = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
-                loanAmount *= downPaymentAmount;
+                var loanAmountAsFractionOfLoan = DownPaymentAsFractionOfLoan(downPayment);
+                //var loanAmountAsFractionOfLoan = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
+                loanAmount *= loanAmountAsFractionOfLoan;
                 // rate of interest and number of payments for monthly payments
                 var rateOfInterest = interest / (12 * 100); // add to method!
                 var numberOfPayments = numberOfYears * 12;  // add to method!
@@ -62,10 +63,11 @@ namespace LoanCalculator
                 return (rateOfInterest * loanAmount) / (1 - Math.Pow(1 + rateOfInterest, numberOfPayments * -1));
             }
 
-            static List<MonthlyLoanAmortizationValues> CalcLoanAmortizationSchedule(int loanAmount, double interest, double paymentAmount, double downPayment)
+            static List<MonthlyLoanAmortizationValues> CalcLoanAmortizationSchedule(double loanAmount, double interest, double paymentAmount, double downPayment)
             {
-                var downPaymentAmount = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
-                var endingBalance = loanAmount * downPaymentAmount;
+                var loanAmountAsFractionOfLoan = DownPaymentAsFractionOfLoan(downPayment);
+                //var loanAmountAsFractionOfLoan = (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
+                var endingBalance = loanAmount * loanAmountAsFractionOfLoan;
                 var monthCount = 1;
                 var loanAmorizationScheduleLocal = new List<MonthlyLoanAmortizationValues>();
                 while (endingBalance > 0.0)
@@ -150,6 +152,12 @@ namespace LoanCalculator
                 bool ok = Double.TryParse(input, out result);
                 ok = ok && (result > low) && (result < high);
                 return ok;
+            }
+
+            static double DownPaymentAsFractionOfLoan(double downPayment)
+            {
+                return (100 - downPayment) / 100.0; // implicit cast to float - otherwise will truncate value to 0!
+
             }
         }
     }

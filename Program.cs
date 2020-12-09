@@ -146,17 +146,35 @@ namespace LoanCalculator
 
             static void OutputForCSVLoanAmortizationSchedule(List<MonthlyLoanAmortizationValues> loanAmortizationSchedule)
             {
-                int ctr = 1;
-                Console.WriteLine("Month,Payment,Interest,Principle,Balance");
-                foreach (var monthlyLoanAmortizationValues in loanAmortizationSchedule)
+                // Write to local file: 
+                //   C:\Users\dmlau\Source\Repos\LoanCalculator\bin\Debug\netcoreapp3.1\LoanAmortizationSchedule.csv
+                // TODO email file
+                // TODO Output month # in amortization schedule additionally as montn/Year from today's date
+                try
                 {
-                    string line = String.Format("{0},\"{1:C}\",\"{2:C}\",\"{3:C}\",\"{4:C}\"", ctr++,
-                                                monthlyLoanAmortizationValues.monthlyPayment,
-                                                monthlyLoanAmortizationValues.monthlyInterest,
-                                                monthlyLoanAmortizationValues.monthlyPrinciple,
-                                                monthlyLoanAmortizationValues.monthlyBalance
-                                              );
-                    Console.WriteLine(line);
+                    string fileNameCSV = "LoanAmortizationSchedule.csv";
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileNameCSV))
+                    {
+                        int ctr = 1;
+                        string line = "Month,Payment,Interest,Principle,Balance";
+                        Console.WriteLine(line);
+                        file.WriteLine(line);
+                        foreach (var monthlyLoanAmortizationValues in loanAmortizationSchedule)
+                        {
+                            line = String.Format("{0},\"{1:C}\",\"{2:C}\",\"{3:C}\",\"{4:C}\"", ctr++,
+                                                        monthlyLoanAmortizationValues.monthlyPayment,
+                                                        monthlyLoanAmortizationValues.monthlyInterest,
+                                                        monthlyLoanAmortizationValues.monthlyPrinciple,
+                                                        monthlyLoanAmortizationValues.monthlyBalance
+                                                      );
+                            Console.WriteLine(line);
+                            file.WriteLine(line);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception caught in writing CSV file: {0}", e);
                 }
             }
 

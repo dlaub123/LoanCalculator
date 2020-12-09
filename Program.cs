@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 
 namespace LoanCalculator
 {
@@ -150,9 +151,9 @@ namespace LoanCalculator
                 //   C:\Users\dmlau\Source\Repos\LoanCalculator\bin\Debug\netcoreapp3.1\LoanAmortizationSchedule.csv
                 // TODO email file
                 // TODO Output month # in amortization schedule additionally as montn/Year from today's date
+                string fileNameCSV = "LoanAmortizationSchedule.csv";
                 try
                 {
-                    string fileNameCSV = "LoanAmortizationSchedule.csv";
                     using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileNameCSV))
                     {
                         int ctr = 1;
@@ -172,9 +173,35 @@ namespace LoanCalculator
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Exception caught in writing CSV file: {0}", e);
+                    Console.WriteLine("Exception caught in writing CSV file: {0}", ex.ToString());
+                }
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+                    mail.From = new MailAddress("dmlaub123@gmail.com");
+                    mail.To.Add("dmlaub123@gmail.com");
+                    mail.Subject = "Loan Amortization Schedule";
+                    mail.Body = "Loan Amortization Schedule";
+                    System.Net.Mail.Attachment attachment;
+                    attachment = new System.Net.Mail.Attachment(fileNameCSV);
+                    mail.Attachments.Add(attachment);
+                    SmtpServer.Port = 587;
+
+                    Console.WriteLine("Domain: {0} UserName: {1} Password: {2}", 
+                                                     new System.Net.NetworkCredential().Domain,
+                                                     new System.Net.NetworkCredential().UserName,
+                                                     new System.Net.NetworkCredential().Password);
+
+                    SmtpServer.Credentials = new System.Net.NetworkCredential(); // "username", "password");
+                    SmtpServer.EnableSsl = true;
+                    SmtpServer.Send(mail);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception caught in mailing CSV file: {0}", ex.ToString());
                 }
             }
 

@@ -189,15 +189,13 @@ namespace LoanCalculator
                     attachment = new System.Net.Mail.Attachment(fileNameCSV);
                     mail.Attachments.Add(attachment);
                     SmtpServer.Port = 587;
-
-                    Console.WriteLine("Domain: {0} UserName: {1} Password: {2}", 
-                                                     new System.Net.NetworkCredential().Domain,
-                                                     new System.Net.NetworkCredential().UserName,
-                                                     new System.Net.NetworkCredential().Password);
-
-                    SmtpServer.Credentials = new System.Net.NetworkCredential(); // "username", "password");
+                    SmtpServer.Credentials = new System.Net.NetworkCredential("dmlaub123@gmail.com", "ywdtoimodrsdgqfo"); // Google App password
                     SmtpServer.EnableSsl = true;
                     SmtpServer.Send(mail);
+                    //Console.WriteLine("Domain: {0} UserName: {1} Password: {2}",
+                    //                                new System.Net.NetworkCredential().Domain,
+                    //                               new System.Net.NetworkCredential().UserName,
+                    //                               new System.Net.NetworkCredential().Password);
                 }
                 catch (Exception ex)
                 {
